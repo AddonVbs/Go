@@ -20,6 +20,8 @@ type CalculationRequest struct {
 	Expression string `json:"expression"`
 }
 
+var task string = ""
+
 var calculations = []Calculation{}
 
 var Task string = ""
