@@ -22,6 +22,18 @@ type CalculationRequest struct {
 
 var calculations = []Calculation{}
 
+var Task string = ""
+
+type task struct {
+	Tasks string `json:"task"`
+}
+
+func PostHendler(t task) string {
+	Task = t.Tasks
+	return Task
+
+}
+
 func calculationExpression(expression string) (string, error) {
 	expr, err := govaluate.NewEvaluableExpression(expression)
 	if err != nil {
@@ -70,6 +82,7 @@ func main() {
 	e.Use(middleware.Logger())
 
 	e.GET("/calculations", getCalculations)
+
 	e.POST("/calculations", postCalculation)
 	e.Start("localhost:8080")
 
