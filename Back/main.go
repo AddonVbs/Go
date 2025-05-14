@@ -20,8 +20,6 @@ type CalculationRequest struct {
 	Expression string `json:"expression"`
 }
 
-var task string = ""
-
 var calculations = []Calculation{}
 
 var Task string = ""
@@ -30,6 +28,7 @@ type task struct {
 	Tasks string `json:"task"`
 }
 
+// 4
 func PostHendler(t task) string {
 	Task = t.Tasks
 	return Task
