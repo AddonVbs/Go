@@ -1,98 +1,42 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
-	"github.com/Knetic/govaluate"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
-
-type Calculation struct {
-	ID         string `json:"id"`
-	Expression string `json:"expression"`
-	Result     string `json:"result"`
-}
-
-type CalculationRequest struct {
-	Expression string `json:"expression"`
-}
-
-var calculations = []Calculation{}
-
-var Task string = ""
 
 type task struct {
 	Tasks string `json:"task"`
 }
 
-func PostHendler(t task) string {
-	Task = t.Tasks
-	return Task
+var Task string = "Содить за молоком"
+var main_task = task{}
 
+// 1
+func GETHendler(h echo.Context) error {
+
+	main_task = task{Tasks: Task}
+
+	return h.JSON(http.StatusOK, "Все ок")
 }
 
-func helloTask(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello-")
+func POSTHendler(h echo.Context) error {
 
-}
-
-func calculationExpression(expression string) (string, error) {
-	expr, err := govaluate.NewEvaluableExpression(expression)
-	if err != nil {
-		return "", err
-	}
-	result, err := expr.Evaluate(nil)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("%v", result), err
-
-}
-func postCalculation(c echo.Context) error {
-	var req CalculationRequest
-	err := c.Bind(&req)
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invaild request"})
-	}
-
-	result, err := calculationExpression(req.Expression)
-
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "invalid Expression"})
-	}
-
-	calc := Calculation{
-		ID:         uuid.NewString(),
-		Expression: req.Expression,
-		Result:     result,
-	}
-	calculations = append(calculations, calc)
-
-	return c.JSON(http.StatusCreated, calc)
-
-}
-
-func getCalculations(c echo.Context) error {
-	return c.JSON(http.StatusOK, calculations)
+	return h.JSON(http.StatusOK, main_task)
 }
 
 func main() {
 
-	PostHendler(task{Tasks: "уборка"})
 	e := echo.New()
-
-	http.HandleFunc("/", helloTask)
 
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 
-	e.GET("/calculations", getCalculations)
+	e.GET("/myTask", GETHendler)
+	e.POST("/myTask", POSTHendler)
 
-	e.POST("/calculations", postCalculation)
 	e.Start("localhost:8080")
 
 }
