@@ -15,14 +15,14 @@ var Task string = "Содить за молоком"
 var main_task = task{}
 
 // 1
-func GETHendler(h echo.Context) error {
+func POSTHendler(h echo.Context) error {
 
 	main_task = task{Tasks: Task}
 
 	return h.JSON(http.StatusOK, "Все ок")
 }
 
-func POSTHendler(h echo.Context) error {
+func GETHendler(h echo.Context) error {
 
 	return h.JSON(http.StatusOK, main_task)
 }
@@ -34,8 +34,8 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 
-	e.GET("/myTask", GETHendler)
 	e.POST("/myTask", POSTHendler)
+	e.GET("/myTask", GETHendler)
 
 	e.Start("localhost:8080")
 
