@@ -28,10 +28,14 @@ type task struct {
 	Tasks string `json:"task"`
 }
 
-// 4
 func PostHendler(t task) string {
 	Task = t.Tasks
 	return Task
+
+}
+
+func helloTask(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprint(w, "Hello-")
 
 }
 
@@ -77,7 +81,11 @@ func getCalculations(c echo.Context) error {
 }
 
 func main() {
+
+	PostHendler(task{Tasks: "уборка"})
 	e := echo.New()
+
+	http.HandleFunc("/", helloTask)
 
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
