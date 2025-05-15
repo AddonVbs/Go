@@ -25,10 +25,11 @@ func POSTHendler(h echo.Context) error {
 
 	main_task = t
 
-	return h.JSON(http.StatusOK, "Все ок, ваша задача сохранена!")
+	return h.JSON(http.StatusOK, "Все успешно сохранилось")
 }
 
 func GETtask(h echo.Context) error {
+	//var char string = "Ваша задача - " + main_task.Tasks
 
 	return h.JSON(http.StatusOK, main_task)
 }
