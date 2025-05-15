@@ -11,18 +11,24 @@ type task struct {
 	Tasks string `json:"task"`
 }
 
-var Task string = "Содить за молоком"
 var main_task = task{}
 
 // 1
+
 func POSTHendler(h echo.Context) error {
+	var t task
 
-	main_task = task{Tasks: Task}
+	if err := h.Bind(&t); err != nil {
+		return h.JSON(http.StatusBadRequest, "Неверный формат запроса")
 
-	return h.JSON(http.StatusOK, "Все ок")
+	}
+
+	main_task = t
+
+	return h.JSON(http.StatusOK, "Все ок, ваша задача сохранена!")
 }
 
-func GETHendler(h echo.Context) error {
+func GETtask(h echo.Context) error {
 
 	return h.JSON(http.StatusOK, main_task)
 }
@@ -34,8 +40,8 @@ func main() {
 	e.Use(middleware.CORS())
 	e.Use(middleware.Logger())
 
-	e.POST("/myTask", POSTHendler)
-	e.GET("/myTask", GETHendler)
+	e.POST("/task", POSTHendler)
+	e.GET("/task", GETtask)
 
 	e.Start("localhost:8080")
 
