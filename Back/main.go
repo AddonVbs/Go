@@ -2,48 +2,95 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
-type task struct {
-	Tasks string `json:"task"`
+type Task struct {
+	ID    int    `json:"id"`
+	Task1 string `json:"task"`
 }
 
-var main_task = task{}
+type Response struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
 
-// 1
+// all global var
 
-func POSTHendler(h echo.Context) error {
-	var t task
+var IDtask = 1
+var my_task []Task
 
-	if err := h.Bind(&t); err != nil {
-		return h.JSON(http.StatusBadRequest, "Неверный формат запроса")
+func GetHandler(c echo.Context) error {
+	return c.JSON(http.StatusOK, my_task)
+}
 
+func PostHandler(c echo.Context) error {
+	var t Task
+
+	if err := c.Bind(&t); err != nil {
+		return c.JSON(http.StatusBadRequest, Response{
+			Status:  "Error",
+			Message: "Could not add Task",
+		})
 	}
 
-	main_task = t
+	t.ID = IDtask
+	IDtask++
 
-	return h.JSON(http.StatusOK, "Все успешно сохранилось")
+	my_task = append(my_task, t)
+
+	return c.JSON(http.StatusOK, Response{
+		Status:  "Success",
+		Message: "Task was added successfully",
+	})
 }
 
-func GETtask(h echo.Context) error {
-	//var char string = "Ваша задача - " + main_task.Tasks
+func PatchHandler(c echo.Context) error {
+	IDparam := c.Param("id")
 
-	return h.JSON(http.StatusOK, main_task)
+	id, err := strconv.Atoi(IDparam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Response{Status: "Bad", Message: "Invalid Patch !"})
+	}
+	var updataTask Task
+
+	if err := c.Bind(&updataTask); err != nil {
+		return c.JSON(http.StatusBadRequest, Response{
+			Status:  "Error",
+			Message: "Could not updata Task",
+		})
+	}
+
+	updata := false
+	for i, task := range my_task {
+		if task.ID == id {
+			updataTask.ID = id
+			my_task[i] = updataTask
+			updata = true
+			break
+
+		}
+
+	}
+	if !updata {
+		return c.JSON(http.StatusBadRequest, Response{
+			Status:  "Error-updata (77 строка) ",
+			Message: "Could not updata Task",
+		})
+
+	}
+	return c.JSON(http.StatusOK, Response{Status: "Success", Message: "Was update "})
+
 }
 
 func main() {
-
 	e := echo.New()
 
-	e.Use(middleware.CORS())
-	e.Use(middleware.Logger())
+	e.GET("/task", GetHandler)
+	e.POST("/task", PostHandler)
+	e.PATCH("/task/:id", PatchHandler)
 
-	e.POST("/task", POSTHendler)
-	e.GET("/task", GETtask)
-
-	e.Start("localhost:8080")
-
+	e.Start(":8080")
 }
