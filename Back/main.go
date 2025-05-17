@@ -108,7 +108,7 @@ func main() {
 
 	e.GET("/tasks", GetHandler)
 	e.POST("/tasks", PostHandler)
-	e.PATCH("/tasks:id", PatchHandler)
+	e.PATCH("/tasks/:id", PatchHandler)
 	e.DELETE("tasks/:id", Deletahendler)
 
 	e.Start(":8080")
