@@ -19,15 +19,6 @@ type Response struct {
 
 // all global var
 
-
-func POSTHendler(h echo.Context) error {
-	var t task = task{Tasks: "Помыть посуду"}
-	/*
-		if err := h.Bind(&t); err != nil {
-			return h.JSON(http.StatusBadRequest, "Неверный формат запроса")
-
-		} */
-
 var IDtask = 1
 var my_task []Task
 
@@ -44,7 +35,6 @@ func PostHandler(c echo.Context) error {
 			Message: "Could not add Task",
 		})
 	}
-
 
 	t.ID = IDtask
 	IDtask++
@@ -98,17 +88,9 @@ func PatchHandler(c echo.Context) error {
 func main() {
 	e := echo.New()
 
-
-	e.Use(middleware.CORS())
-	e.Use(middleware.Logger())
-
 	e.GET("/task", GetHandler)
 	e.POST("/task", PostHandler)
 	e.PATCH("/task/:id", PatchHandler)
-
-	e.Start("localhost:8080")
-
-
 
 	e.Start(":8080")
 }
