@@ -20,13 +20,20 @@ type Response struct {
 // all global var
 
 var IDtask = 1
-var my_task []Task
+var my_task = make(map[int]Task)
 
 func GetHandler(c echo.Context) error {
-	return c.JSON(http.StatusOK, my_task)
+	var t []Task
+
+	for _, key := range my_task {
+		t = append(t, key)
+
+	}
+	return c.JSON(http.StatusOK, &t)
 }
 
 func PostHandler(c echo.Context) error {
+
 	var t Task
 
 	if err := c.Bind(&t); err != nil {
@@ -39,7 +46,7 @@ func PostHandler(c echo.Context) error {
 	t.ID = IDtask
 	IDtask++
 
-	my_task = append(my_task, t)
+	my_task[t.ID] = t
 
 	return c.JSON(http.StatusOK, Response{
 		Status:  "Success",
@@ -63,25 +70,37 @@ func PatchHandler(c echo.Context) error {
 		})
 	}
 
-	updata := false
-	for i, task := range my_task {
-		if task.ID == id {
-			updataTask.ID = id
-			my_task[i] = updataTask
-			updata = true
-			break
-
-		}
-
-	}
-	if !updata {
+	if _, exist := my_task[id]; !exist {
 		return c.JSON(http.StatusBadRequest, Response{
-			Status:  "Error-updata (77 строка) ",
+			Status:  "Error",
 			Message: "Could not updata Task",
 		})
-
 	}
+
+	updataTask.ID = id
+	my_task[id] = updataTask
+
 	return c.JSON(http.StatusOK, Response{Status: "Success", Message: "Was update "})
+
+}
+
+func Deletahendler(c echo.Context) error {
+	IDparam := c.Param("id")
+
+	id, err := strconv.Atoi(IDparam)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, Response{Status: "Bad", Message: "Invalid Patch !"})
+	}
+
+	if _, exist := my_task[id]; !exist {
+		return c.JSON(http.StatusBadRequest, Response{
+			Status:  "Error",
+			Message: "Could not updata Task",
+		})
+	}
+
+	delete(my_task, id)
+	return c.JSON(http.StatusOK, Response{Status: "Success", Message: "Was delete "})
 
 }
 
@@ -91,6 +110,7 @@ func main() {
 	e.GET("/task", GetHandler)
 	e.POST("/task", PostHandler)
 	e.PATCH("/task/:id", PatchHandler)
+	e.DELETE("task/:id", Deletahendler)
 
 	e.Start(":8080")
 }
