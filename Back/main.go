@@ -99,7 +99,7 @@ func Deletahendler(c echo.Context) error {
 	}
 
 	delete(my_task, id)
-	return c.JSON(http.StatusOK, Response{Status: "Success", Message: "Was delete "})
+	return c.JSON(http.StatusNoContent, Response{Status: "Success", Message: "Was delete "})
 
 }
 
