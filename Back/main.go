@@ -89,13 +89,12 @@ func Deletahendler(c echo.Context) error {
 
 	id, err := strconv.Atoi(IDparam)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, Response{Status: "Bad", Message: "Invalid Patch !"})
+		return c.JSON(http.StatusBadRequest, Response{Status: "204"})
 	}
 
 	if _, exist := my_task[id]; !exist {
 		return c.JSON(http.StatusBadRequest, Response{
-			Status:  "Error",
-			Message: "Could not updata Task",
+			Status: "204",
 		})
 	}
 
@@ -107,10 +106,10 @@ func Deletahendler(c echo.Context) error {
 func main() {
 	e := echo.New()
 
-	e.GET("/task", GetHandler)
-	e.POST("/task", PostHandler)
-	e.PATCH("/task/:id", PatchHandler)
-	e.DELETE("task/:id", Deletahendler)
+	e.GET("/tasks", GetHandler)
+	e.POST("/tasks", PostHandler)
+	e.PATCH("/tasks:id", PatchHandler)
+	e.DELETE("tasks/:id", Deletahendler)
 
 	e.Start(":8080")
 }
