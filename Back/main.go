@@ -89,17 +89,17 @@ func Deletahendler(c echo.Context) error {
 
 	id, err := strconv.Atoi(IDparam)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, Response{Status: "204"})
+		return c.JSON(http.StatusBadRequest, Response{Status: "404"})
 	}
 
 	if _, exist := my_task[id]; !exist {
 		return c.JSON(http.StatusBadRequest, Response{
-			Status: "204",
+			Status: "404",
 		})
 	}
 
 	delete(my_task, id)
-	return c.JSON(http.StatusOK, Response{Status: "Success", Message: "Was delete "})
+	return c.JSON(http.StatusNoContent, Response{Status: "Success", Message: "Was delete "})
 
 }
 
