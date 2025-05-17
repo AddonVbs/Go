@@ -48,10 +48,7 @@ func PostHandler(c echo.Context) error {
 
 	my_task[t.ID] = t
 
-	return c.JSON(http.StatusOK, Response{
-		Status:  "Success",
-		Message: "Task was added successfully",
-	})
+	return c.JSON(http.StatusOK, t)
 }
 
 func PatchHandler(c echo.Context) error {
@@ -80,7 +77,7 @@ func PatchHandler(c echo.Context) error {
 	updataTask.ID = id
 	my_task[id] = updataTask
 
-	return c.JSON(http.StatusOK, Response{Status: "Success", Message: "Was update "})
+	return c.JSON(http.StatusOK, updataTask)
 
 }
 
