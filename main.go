@@ -126,6 +126,8 @@ func Deletahendler(c echo.Context) error {
 }
 
 func main() {
+	initDB()
+
 	e := echo.New()
 
 	e.GET("/tasks", GetHandler)
