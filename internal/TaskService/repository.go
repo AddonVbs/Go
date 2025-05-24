@@ -7,9 +7,9 @@ import (
 type TaskRepository interface {
 	CreateTask(task Task) error
 	GetAllTask() ([]Task, error)
-	GetTaskByID(id string) (Task, error)
+	GetTaskByID(id int) (Task, error)
 	UpdateTask(task Task) error
-	DeleteTask(id string) error
+	DeleteTask(id int) error
 }
 
 type RepositorysTasks struct {
@@ -31,7 +31,7 @@ func (r *RepositorysTasks) GetAllTask() ([]Task, error) {
 
 }
 
-func (r *RepositorysTasks) GetTaskByID(id string) (Task, error) {
+func (r *RepositorysTasks) GetTaskByID(id int) (Task, error) {
 	var t Task
 	err := r.db.First(&t, "id = ?", id).Error
 	return t, err
@@ -42,6 +42,6 @@ func (r *RepositorysTasks) UpdateTask(task Task) error {
 
 }
 
-func (r *RepositorysTasks) DeleteTask(id string) error {
+func (r *RepositorysTasks) DeleteTask(id int) error {
 	return r.db.Delete(&Task{}, "id = ? ", id).Error
 }

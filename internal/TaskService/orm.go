@@ -1,7 +1,7 @@
 package taskservers
 
 type Task struct {
-	ID    uint   `gorm:"primaryKey;autoIncrement" json:"id"`
+	ID    int    `gorm:"primaryKey;autoIncrement" json:"id"`
 	Task1 string `json:"task"`
 }
 

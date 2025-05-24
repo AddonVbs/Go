@@ -3,9 +3,9 @@ package taskservers
 type TaskServers interface {
 	CreateTask(expression string) (Task, error)
 	GetAllTask() ([]Task, error)
-	GetTaskByID(id string) (Task, error)
-	UpdataTask(id, expression string) (Task, error)
-	DeleteTask(id string) error
+	GetTaskByID(id int) (Task, error)
+	UpdataTask(id int, expression string) (Task, error)
+	DeleteTask(id int) error
 }
 
 type taskService struct {
@@ -17,7 +17,7 @@ func NewTaskService(r TaskRepository) taskService {
 }
 
 func (s *taskService) CreateTask(expression string) (Task, error) {
-	var id uint
+	var id int
 	t := Task{
 		ID:    id,
 		Task1: expression,
@@ -36,12 +36,12 @@ func (s *taskService) GetAllTask() ([]Task, error) {
 
 }
 
-func (s *taskService) GetTaskByID(id string) (Task, error) {
+func (s *taskService) GetTaskByID(id int) (Task, error) {
 	return s.repo.GetTaskByID(id)
 
 }
 
-func (s *taskService) UpdataTask(id, expression string) (Task, error) {
+func (s *taskService) UpdataTask(id int, expression string) (Task, error) {
 	task, err := s.repo.GetTaskByID(id)
 	if err != nil {
 		return Task{}, err
@@ -57,6 +57,6 @@ func (s *taskService) UpdataTask(id, expression string) (Task, error) {
 
 }
 
-func (s *taskService) DeleteTask(id string) error {
+func (s *taskService) DeleteTask(id int) error {
 	return s.repo.DeleteTask(id)
 }

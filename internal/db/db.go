@@ -1,6 +1,7 @@
 package db
 
 import (
+	ts "BackEnd/internal/TaskService"
 	"log"
 
 	"gorm.io/driver/postgres"
@@ -9,7 +10,7 @@ import (
 
 var db *gorm.DB
 
-func initDB() {
+func InitDB() (*gorm.DB, error) {
 	dsn := "host=localhost user=postgres password=yourpassword dbname=postgres port=5432 sslmode=disable"
 	var err error
 
@@ -18,7 +19,8 @@ func initDB() {
 		log.Fatalf("Could not connect to DB: %v", err)
 	}
 
-	if err := db.AutoMigrate(&Task{}); err != nil {
+	if err := db.AutoMigrate(&ts.Task{}); err != nil {
 		log.Fatalf("Could not migrate: %v", err)
 	}
+	return db, nil
 }
