@@ -1,4 +1,4 @@
-package taskservers
+package taskservice
 
 type Task struct {
 	ID    int    `gorm:"primaryKey;autoIncrement" json:"id"`

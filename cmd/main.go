@@ -1,41 +1,40 @@
 package main
 
 import (
-	taskhendler "BackEnd/internal/TaskHendler"
-	ts "BackEnd/internal/TaskService"
 	"BackEnd/internal/db"
+	"BackEnd/internal/taskhandler"
+	"BackEnd/internal/taskservice"
 	"log"
 
 	"github.com/labstack/echo/v4"
 )
 
-type Task struct {
-	ID    int    `gorm:"primaryKey;autoIncrement" json:"id"`
-	Task1 string `json:"task"`
-}
-
-type Response struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
-}
-
-func main() {
-	dataBase, err := db.InitDB()
-	if err != nil {
-		log.Fatalf("Could not connect to DB: %v", err)
+/*
+	type Task struct {
+		ID    int    `gorm:"primaryKey;autoIncrement" json:"id"`
+		Task1 string `json:"task"`
 	}
 
-	taskRepo := ts.NewTaskRepository(dataBase)
-	taskServices1 := ts.NewTaskService(taskRepo)
-	taskhendlers := taskhendler.NewTaskHendler(taskServices1)
+	type Response struct {
+		Status  string `json:"status"`
+		Message string `json:"message"`
+	}
+*/
+func main() {
+	dbConn, err := db.InitDB()
+	if err != nil {
+		log.Fatalf("DB error: %v", err)
+	}
+
+	repo := taskservice.NewTaskRepository(dbConn)
+	svc := taskservice.NewTaskService(repo)
+	handler := taskhandler.NewTaskHandler(svc)
 
 	e := echo.New()
-	e.GET("/tasks", taskhendlers.GetHandler)
-	e.POST("/tasks", taskhendlers.PostHandler)
-	e.PATCH("/tasks/:id", taskhendlers.PatchHandler)
-	e.DELETE("/tasks/:id", taskhendlers.DeleteHandler)
+	e.POST("/tasks", handler.PostHandler)
+	e.GET("/tasks", handler.GetHandler)
+	e.PATCH("/tasks/:id", handler.PatchHandler)
+	e.DELETE("/tasks/:id", handler.DeleteHandler)
 
-	if err := e.Start(":8080"); err != nil {
-		log.Fatalf("Server error: %v", err)
-	}
+	log.Fatal(e.Start(":8080"))
 }

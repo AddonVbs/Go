@@ -1,7 +1,8 @@
 package db
 
 import (
-	ts "BackEnd/internal/TaskService"
+	ts "BackEnd/internal/taskservice"
+
 	"log"
 
 	"gorm.io/driver/postgres"

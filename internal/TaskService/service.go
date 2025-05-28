@@ -1,4 +1,4 @@
-package taskservers
+package taskservice
 
 type TaskServers interface {
 	CreateTask(expression string) (Task, error)
@@ -12,25 +12,16 @@ type taskService struct {
 	repo TaskRepository
 }
 
-func NewTaskService(r TaskRepository) taskService {
+func NewTaskService(r TaskRepository) TaskServers {
 	return &taskService{repo: r}
 }
-
 func (s *taskService) CreateTask(expression string) (Task, error) {
-	var id int
-	t := Task{
-		ID:    id,
-		Task1: expression,
-	}
-
-	if err := s.repo.CreateTask(t); err != nil {
+	t := Task{Task1: expression}
+	if err := s.repo.CreateTask(&t); err != nil {
 		return Task{}, err
 	}
-	id++
 	return t, nil
-
 }
-
 func (s *taskService) GetAllTask() ([]Task, error) {
 	return s.repo.GetAllTask()
 

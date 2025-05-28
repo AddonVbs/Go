@@ -1,23 +1,22 @@
-package taskhendler
+package taskhandler
 
 import (
-	ts "BackEnd/internal/TaskService"
+	ts "BackEnd/internal/taskservice"
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
-type TaskHendler struct {
+type TaskHandler struct {
 	service ts.TaskServers
 }
 
-func NewTaskHendler(s ts.TaskServers) *TaskHendler {
-	return &TaskHendler{service: s}
-
+func NewTaskHandler(s ts.TaskServers) *TaskHandler {
+	return &TaskHandler{service: s}
 }
 
-func (h *TaskHendler) GetHandler(c echo.Context) error {
+func (h *TaskHandler) GetHandler(c echo.Context) error {
 	task, err := h.service.GetAllTask()
 
 	if err != nil {
@@ -26,23 +25,21 @@ func (h *TaskHendler) GetHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, task)
 }
 
-func (h *TaskHendler) PostHandler(c echo.Context) error {
-	var req ts.RepositorysTasks
-
+func (h *TaskHandler) PostHandler(c echo.Context) error {
+	var req struct {
+		Expression string `json:"expression"`
+	}
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid payload"})
 	}
-
-	task, err := h.service.CreateTask(req.expression)
-
+	task, err := h.service.CreateTask(req.Expression)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid req"})
+		return c.JSON(http.StatusInternalServerError, ts.Response{Status: "error", Message: "Could not create task"})
 	}
-
 	return c.JSON(http.StatusOK, task)
 }
 
-func (h *TaskHendler) PatchHandler(c echo.Context) error {
+func (h *TaskHandler) PatchHandler(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
@@ -62,7 +59,7 @@ func (h *TaskHendler) PatchHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, updata)
 }
 
-func (h *TaskHendler) DeleteHandler(c echo.Context) error {
+func (h *TaskHandler) DeleteHandler(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid ID"})
