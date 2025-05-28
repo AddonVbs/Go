@@ -16,7 +16,7 @@ func NewTaskService(r TaskRepository) TaskServers {
 	return &taskService{repo: r}
 }
 func (s *taskService) CreateTask(expression string) (Task, error) {
-	t := Task{Task1: expression}
+	t := Task{Task: expression}
 	if err := s.repo.CreateTask(&t); err != nil {
 		return Task{}, err
 	}
@@ -38,7 +38,7 @@ func (s *taskService) UpdataTask(id int, expression string) (Task, error) {
 		return Task{}, err
 	}
 
-	task.Task1 = expression
+	task.Task = expression
 
 	if err := s.repo.UpdateTask(task); err != nil {
 		return Task{}, err

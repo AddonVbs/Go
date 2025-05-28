@@ -27,12 +27,13 @@ func (h *TaskHandler) GetHandler(c echo.Context) error {
 
 func (h *TaskHandler) PostHandler(c echo.Context) error {
 	var req struct {
-		Expression string `json:"expression"`
+		Task string `json:"task"`
 	}
+
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid payload"})
 	}
-	task, err := h.service.CreateTask(req.Expression)
+	task, err := h.service.CreateTask(req.Task)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ts.Response{Status: "error", Message: "Could not create task"})
 	}

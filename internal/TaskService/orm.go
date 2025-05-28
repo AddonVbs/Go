@@ -1,8 +1,8 @@
 package taskservice
 
 type Task struct {
-	ID    int    `gorm:"primaryKey;autoIncrement" json:"id"`
-	Task1 string `json:"task"`
+	ID   int    `gorm:"primaryKey;autoIncrement" json:"id"`
+	Task string `json:"task"`
 }
 
 type Response struct {
