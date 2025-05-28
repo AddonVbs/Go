@@ -41,17 +41,19 @@ func (h *TaskHandler) PostHandler(c echo.Context) error {
 
 func (h *TaskHandler) PatchHandler(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
-
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid ID"})
 	}
 
-	var req ts.TaskRepository
+	var req struct {
+		Expression string `json:"expression"`
+	}
+
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid req"})
 	}
 
-	updata, err := h.service.UpdataTask(id, req.expression)
+	updata, err := h.service.UpdataTask(id, req.Expression)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid updata"})
 	}
