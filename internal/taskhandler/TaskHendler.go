@@ -47,14 +47,14 @@ func (h *TaskHandler) PatchHandler(c echo.Context) error {
 	}
 
 	var req struct {
-		Expression string `json:"expression"`
+		Task string `json:"task"`
 	}
 
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid req"})
 	}
 
-	updata, err := h.service.UpdataTask(id, req.Expression)
+	updata, err := h.service.UpdataTask(id, req.Task)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid updata"})
 	}
