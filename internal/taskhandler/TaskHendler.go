@@ -1,31 +1,34 @@
 package taskhandler
 
 import (
-	ts "BackEnd/internal/taskservice"
+	"context"
 	"net/http"
 	"strconv"
+
+	"BackEnd/internal/taskservice"
+	"BackEnd/internal/web/tasks"
 
 	"github.com/labstack/echo/v4"
 )
 
-type TaskHandler struct {
-	service ts.TaskServers
+type StrictTaskHandler struct {
+	service taskservice.TaskServers
 }
 
-func NewTaskHandler(s ts.TaskServers) *TaskHandler {
-	return &TaskHandler{service: s}
+func NewStrictTaskHandler(s taskservice.TaskServers) *StrictTaskHandler {
+	return &StrictTaskHandler{service: s}
 }
 
-func (h *TaskHandler) GetHandler(c echo.Context) error {
+func (h *StrictTaskHandler) GetHandler(_ context.Context, _ tasks.GetTasksRequestObject) (tasks.GetTasksResponseObject, error) {
 	task, err := h.service.GetAllTask()
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, ts.Response{Status: "error", Message: "Cloud not get task "})
+		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, task)
+	return h.JSON(http.StatusOK, task)
 }
 
-func (h *TaskHandler) PostHandler(c echo.Context) error {
+func (h *StrictTaskHandler) PostHandler(c echo.Context) error {
 	var req struct {
 		Task string `json:"task"`
 	}
@@ -40,7 +43,7 @@ func (h *TaskHandler) PostHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, task)
 }
 
-func (h *TaskHandler) PatchHandler(c echo.Context) error {
+func (h *StrictTaskHandler) PatchHandler(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid ID"})
@@ -62,7 +65,7 @@ func (h *TaskHandler) PatchHandler(c echo.Context) error {
 	return c.JSON(http.StatusOK, updata)
 }
 
-func (h *TaskHandler) DeleteHandler(c echo.Context) error {
+func (h *StrictTaskHandler) DeleteHandler(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid ID"})

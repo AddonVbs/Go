@@ -2,6 +2,7 @@ openapi: 3.0.0
 info:
   title: API
   version: 1.0.0
+
 paths:
   /tasks:
     get:
@@ -9,14 +10,14 @@ paths:
       tags:
         - tasks
       responses:
-        '200':
+        "200":
           description: A list of tasks
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Task'
+                  $ref: "#/components/schemas/Task"
     post:
       summary: Create a new task
       tags:
@@ -27,15 +28,49 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
-        responses:
-        '201':
+              $ref: "#/components/schemas/Task"
+      responses:
+        "201":
           description: The created task
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
-              
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: uint
+    patch:
+      summary: Update a task by ID
+      tags:
+        - tasks
+      requestBody:
+        description: The fields to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+      responses:
+        "200":
+          description: Updated task
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      summary: Delete a task by ID
+      tags:
+        - tasks
+      responses:
+        "204":
+          description: No Content (успешно удалено)
+
 components:
   schemas:
     Task:
@@ -43,8 +78,5 @@ components:
       properties:
         id:
           type: integer
-          format: uint # так как в БД айди это только положительные числа.
         task:
           type: string
-        is_done:
-          type: boolean

@@ -1,40 +1,38 @@
 package main
 
 import (
-	"BackEnd/internal/db"
-	"BackEnd/internal/taskhandler"
-	"BackEnd/internal/taskservice"
 	"log"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+
+	"BackEnd/internal/database"
+	"BackEnd/internal/taskhandler"
+	"BackEnd/internal/taskservice"
+	tasks "BackEnd/internal/web/tasks"
 )
 
-/*
-	type Task struct {
-		ID    int    `gorm:"primaryKey;autoIncrement" json:"id"`
-		Task1 string `json:"task"`
-	}
-
-	type Response struct {
-		Status  string `json:"status"`
-		Message string `json:"message"`
-	}
-*/
 func main() {
-	dbConn, err := db.InitDB()
-	if err != nil {
-		log.Fatalf("DB error: %v", err)
-	}
+	// 1) Инициализируем БД и миграции
+	database.InitDB()
+	// … допустим, вы уже мигрировали (AutoMigrate) где-то в InitDB
 
-	repo := taskservice.NewTaskRepository(dbConn)
-	svc := taskservice.NewTaskService(repo)
-	handler := taskhandler.NewTaskHandler(svc)
+	// 2) Создаём repository → service → handler
+	repo := taskservice.NewTaskRepository(database.DB)
+	service := taskservice.NewTaskService(repo)
+	handler := taskhandler.NewStrictTaskHandler(service)
 
+	// 3) Заводим Echo
 	e := echo.New()
-	e.POST("/tasks", handler.PostHandler)
-	e.GET("/tasks", handler.GetHandler)
-	e.PATCH("/tasks/:id", handler.PatchHandler)
-	e.DELETE("/tasks/:id", handler.DeleteHandler)
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	log.Fatal(e.Start(":8080"))
+	// 4) Регистрируем «строгий» хендлер, сгенеренный oapi-codegen
+	strictHandler := tasks.NewStrictHandler(handler, nil)
+	tasks.RegisterHandlers(e, strictHandler)
+
+	// 5) Запускаем сервер
+	if err := e.Start(":8080"); err != nil {
+		log.Fatalf("server fail: %v", err)
+	}
 }
