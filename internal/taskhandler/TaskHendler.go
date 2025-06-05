@@ -25,26 +25,48 @@ func (h *StrictTaskHandler) GetHandler(_ context.Context, _ tasks.GetTasksReques
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return h.JSON(http.StatusOK, task)
+
+	response := tasks.GetTasks200JSONResponse{}
+	for _, srvTask := range task {
+
+		var idint int = int(srvTask.ID)
+		var textPtr = srvTask.Task
+		response = append(response, tasks.Task{
+			Id:   &idint,
+			Task: &textPtr,
+		})
+	}
+
+	return response, nil
 }
 
-func (h *StrictTaskHandler) PostHandler(c echo.Context) error {
-	var req struct {
-		Task string `json:"task"`
+func (h *StrictTaskHandler) PostTasks(_ context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
+	body := request.Body
+
+	newServiceTask := taskservice.Task{
+		Task: *body.Task,
 	}
 
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid payload"})
-	}
-	task, err := h.service.CreateTask(req.Task)
+	task, err := h.service.CreateTask(newServiceTask.Task)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, ts.Response{Status: "error", Message: "Could not create task"})
+		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, task)
+	var idint int = int(task.ID)
+	var textPtr = task.Task
+	resp := tasks.PostTasks201JSONResponse{
+		Id:   &idint,
+		Task: &textPtr,
+		// IsDone: nil,
+	}
+
+	return resp, nil
 }
 
-func (h *StrictTaskHandler) PatchHandler(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
+func (h *StrictTaskHandler) PatchTasksId(_ context.Context, request tasks.PatchTasksIdRequestObject) (tasks.PatchTasksIdResponseObject, error) {
+	pathParams := request.PathParams
+	body := request.Body
+
+	id := int(*pathParams.ID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid ID"})
 	}
