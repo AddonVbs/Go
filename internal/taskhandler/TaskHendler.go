@@ -3,7 +3,6 @@ package taskhandler
 import (
 	"context"
 	"net/http"
-	"strconv"
 
 	"BackEnd/internal/taskservice"
 	"BackEnd/internal/web/tasks"
@@ -19,7 +18,7 @@ func NewStrictTaskHandler(s taskservice.TaskServers) *StrictTaskHandler {
 	return &StrictTaskHandler{service: s}
 }
 
-func (h *StrictTaskHandler) GetHandler(_ context.Context, _ tasks.GetTasksRequestObject) (tasks.GetTasksResponseObject, error) {
+func (h *StrictTaskHandler) GetTasks(ctx context.Context, request tasks.GetTasksRequestObject) (tasks.GetTasksResponseObject, error) {
 	task, err := h.service.GetAllTask()
 
 	if err != nil {
@@ -40,7 +39,7 @@ func (h *StrictTaskHandler) GetHandler(_ context.Context, _ tasks.GetTasksReques
 	return response, nil
 }
 
-func (h *StrictTaskHandler) PostTasks(_ context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
+func (h *StrictTaskHandler) PostTasks(ctx context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
 	body := request.Body
 
 	newServiceTask := taskservice.Task{
@@ -62,40 +61,33 @@ func (h *StrictTaskHandler) PostTasks(_ context.Context, request tasks.PostTasks
 	return resp, nil
 }
 
-func (h *StrictTaskHandler) PatchTasksId(_ context.Context, request tasks.PatchTasksIdRequestObject) (tasks.PatchTasksIdResponseObject, error) {
-	pathParams := request.PathParams
-	body := request.Body
-
-	id := int(*pathParams.ID)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid ID"})
-	}
-
-	var req struct {
-		Task string `json:"task"`
-	}
-
-	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid req"})
-	}
-
-	updata, err := h.service.UpdataTask(id, req.Task)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid updata"})
-	}
-
-	return c.JSON(http.StatusOK, updata)
-}
-
-func (h *StrictTaskHandler) DeleteHandler(c echo.Context) error {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid ID"})
-	}
+func (h *StrictTaskHandler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
+	id := int(request.Id)
 
 	if err := h.service.DeleteTask(id); err != nil {
-		return c.JSON(http.StatusBadRequest, ts.Response{Status: "error", Message: "Invalid del."})
+		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusNoContent, ts.Response{Status: "Seccess", Message: "Was Del."})
+	return tasks.DeleteTasksId204Response{}, nil
+}
+
+func (h *StrictTaskHandler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRequestObject) (tasks.PatchTasksIdResponseObject, error) {
+	pathParams := request.Id
+	body := request.Body
+
+	id := int(pathParams)
+
+	updata, err := h.service.UpdataTask(id, *body.Task)
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	var idPach int = (updata.ID)
+	bodyPach := updata.Task
+	resp := tasks.PatchTasksId200JSONResponse{
+		Id:   &idPach,
+		Task: &bodyPach,
+	}
+
+	return resp, nil
 }
