@@ -18,6 +18,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Task"
+
     post:
       summary: Create a new task
       tags:
@@ -38,17 +39,17 @@ paths:
                 $ref: "#/components/schemas/Task"
 
   /tasks/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
-          format: uint
     patch:
       summary: Update a task by ID
       tags:
         - tasks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       requestBody:
         description: The fields to update
         required: true
@@ -63,10 +64,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Task"
+
     delete:
       summary: Delete a task by ID
       tags:
         - tasks
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
       responses:
         "204":
           description: No Content (успешно удалено)
