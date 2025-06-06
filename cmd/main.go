@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	"BackEnd/internal/database"
+	"BackEnd/internal/db"
 	"BackEnd/internal/taskhandler"
 	"BackEnd/internal/taskservice"
 	tasks "BackEnd/internal/web/tasks"
@@ -14,11 +14,11 @@ import (
 
 func main() {
 	// 1) Инициализируем БД и миграции
-	database.InitDB()
+	db.InitDB()
 	// … допустим, вы уже мигрировали (AutoMigrate) где-то в InitDB
 
 	// 2) Создаём repository → service → handler
-	repo := taskservice.NewTaskRepository(database.DB)
+	repo := taskservice.NewTaskRepository(db.Db)
 	service := taskservice.NewTaskService(repo)
 	handler := taskhandler.NewStrictTaskHandler(service)
 
