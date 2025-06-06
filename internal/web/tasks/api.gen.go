@@ -16,8 +16,8 @@ import (
 
 // Task defines model for Task.
 type Task struct {
-	Id     *int   `json:"id,omitempty"`
-	Task   *string `json:"task,omitempty"`
+	Id   *int    `json:"id,omitempty"`
+	Task *string `json:"task,omitempty"`
 }
 
 // PostTasksJSONRequestBody defines body for PostTasks for application/json ContentType.
@@ -36,10 +36,10 @@ type ServerInterface interface {
 	PostTasks(ctx echo.Context) error
 	// Delete a task by ID
 	// (DELETE /tasks/{id})
-	DeleteTasksId(ctx echo.Context, id uint) error
+	DeleteTasksId(ctx echo.Context, id int64) error
 	// Update a task by ID
 	// (PATCH /tasks/{id})
-	PatchTasksId(ctx echo.Context, id uint) error
+	PatchTasksId(ctx echo.Context, id int64) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -69,7 +69,7 @@ func (w *ServerInterfaceWrapper) PostTasks(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) DeleteTasksId(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "id" -------------
-	var id uint
+	var id int64
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, ctx.Param("id"), &id)
 	if err != nil {
@@ -85,7 +85,7 @@ func (w *ServerInterfaceWrapper) DeleteTasksId(ctx echo.Context) error {
 func (w *ServerInterfaceWrapper) PatchTasksId(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "id" -------------
-	var id uint
+	var id int64
 
 	err = runtime.BindStyledParameterWithLocation("simple", false, "id", runtime.ParamLocationPath, ctx.Param("id"), &id)
 	if err != nil {
@@ -166,7 +166,7 @@ func (response PostTasks201JSONResponse) VisitPostTasksResponse(w http.ResponseW
 }
 
 type DeleteTasksIdRequestObject struct {
-	Id uint `json:"id"`
+	Id int64 `json:"id"`
 }
 
 type DeleteTasksIdResponseObject interface {
@@ -182,7 +182,7 @@ func (response DeleteTasksId204Response) VisitDeleteTasksIdResponse(w http.Respo
 }
 
 type PatchTasksIdRequestObject struct {
-	Id   uint `json:"id"`
+	Id   int64 `json:"id"`
 	Body *PatchTasksIdJSONRequestBody
 }
 
@@ -280,7 +280,7 @@ func (sh *strictHandler) PostTasks(ctx echo.Context) error {
 }
 
 // DeleteTasksId operation middleware
-func (sh *strictHandler) DeleteTasksId(ctx echo.Context, id uint) error {
+func (sh *strictHandler) DeleteTasksId(ctx echo.Context, id int64) error {
 	var request DeleteTasksIdRequestObject
 
 	request.Id = id
@@ -305,7 +305,7 @@ func (sh *strictHandler) DeleteTasksId(ctx echo.Context, id uint) error {
 }
 
 // PatchTasksId operation middleware
-func (sh *strictHandler) PatchTasksId(ctx echo.Context, id uint) error {
+func (sh *strictHandler) PatchTasksId(ctx echo.Context, id int64) error {
 	var request PatchTasksIdRequestObject
 
 	request.Id = id
