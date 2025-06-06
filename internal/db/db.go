@@ -7,13 +7,13 @@ import (
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
+var Db *gorm.DB
 
 func InitDB() (*gorm.DB, error) {
 	dsn := "host=localhost user=postgres password=yourpassword dbname=postgres port=5432 sslmode=disable"
 	var err error
 
-	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	Db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("Could not connect to DB: %v", err)
 	}
@@ -23,5 +23,5 @@ func InitDB() (*gorm.DB, error) {
 	//     log.Fatalf("Could not migrate: %v", err)
 	// }
 
-	return db, nil
+	return Db, nil
 }
