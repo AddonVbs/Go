@@ -8,8 +8,11 @@ MIGRATE := migrate -path ./migrations -database $(DB_DSN)
 lint:
 	golangci-lint run --output.text.colors=true
 
-gen:
-	oapi-codegen -config openapi/.openapi -include-tags tasks -package tasks openapi/openapi.yaml > ./internal/web/tasks/api.gen.go
+gen-tasks:
+	oapi-codegen -config openapi/.openapi -include-tags tasks -package tasks openapi/openapi.yaml > ./internal/web/tasks/api.gen-tasks.go
+
+gen-users:
+	oapi-codegen -config openapi/.openapi -include-tags users -package users openapi/openapi.yaml > ./internal/web/users/api.gen-users.go
 
 # Таргет для создания новой миграции
 migrate-new:
