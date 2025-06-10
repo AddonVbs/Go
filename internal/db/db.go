@@ -18,10 +18,5 @@ func InitDB() (*gorm.DB, error) {
 		log.Fatalf("Could not connect to DB: %v", err)
 	}
 
-	// Убираем AutoMigrate, т.к. миграции будут в ./migrations/*.sql
-	// if err := db.AutoMigrate(&ts.Task{}); err != nil {
-	//     log.Fatalf("Could not migrate: %v", err)
-	// }
-
 	return Db, nil
 }
