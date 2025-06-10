@@ -1,18 +1,18 @@
 package userservice
 
-import "gorm.io/gorm"
-
 type UserService interface {
 	CreateUser(expression, password string) error
 	GetAllUser() ([]User, error)
 	GetUser(id int) (User, error)
 	UpdataUser(user string) error
-	UpdataPass(Pass string)
+	UpdataPass(Pass string) error
 	DeleteUser(id int) error
 }
 
 type UsersServiveDb struct {
-	db *gorm.DB
+	repo UsersRepository
 }
 
-func NewUserService()
+func NewUserService() {
+
+}
