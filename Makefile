@@ -6,7 +6,7 @@ MIGRATE := migrate -path ./migrations -database $(DB_DSN)
 
 
 lint:
-	golangci-lint run --output.text.colors=true
+	golangci-lint run
 
 gen-tasks:
 	oapi-codegen -config openapi/.openapi -include-tags tasks -package tasks openapi/openapi.yaml > ./internal/web/tasks/api.gen-tasks.go
