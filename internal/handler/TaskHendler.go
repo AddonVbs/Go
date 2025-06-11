@@ -1,4 +1,4 @@
-package taskhandler
+package handler
 
 import (
 	"context"

@@ -10,7 +10,6 @@ type UsersRepository interface {
 	GetAllUser() ([]User, error)
 	GetUser(id int) (User, error)
 	UpdataUser(user User) error
-	UpdataPass(Pass string) error
 	DeleteUser(id int) error
 }
 
@@ -18,13 +17,8 @@ type UserRepositoryDb struct {
 	db *gorm.DB
 }
 
-// UpdataPass implements UsersRepository.
-func (u *UserRepositoryDb) UpdataPass(Pass string) error {
-	return u.db.Save(&Pass).Error
-}
-
 // CreateUser implements UsersRepository.
-func (u *UserRepositoryDb) CreateUser(user *User) error {
+func (u *UserRepositoryDb) CreateUser(user User) error {
 	return u.db.Create(user).Error
 }
 

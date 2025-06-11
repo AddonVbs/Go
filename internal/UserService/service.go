@@ -5,7 +5,6 @@ type UserService interface {
 	GetAllUser() ([]User, error)
 	GetUser(id int) (User, error)
 	UpdataUser(user string) error
-	UpdataPass(Pass string) error
 	DeleteUser(id int) error
 }
 
@@ -21,7 +20,7 @@ func NewUserService(r UsersRepository) UserService {
 // CreateUser implements UserService.
 func (c *CUsersServive) CreateUser(expression string, pass string) (User, error) {
 	ur := User{Email: expression, Password: pass}
-	if err := c.repo.CreateUser(&ur); err != nil {
+	if err := c.repo.CreateUser(ur); err != nil {
 		return User{}, err
 	}
 	return ur, nil
@@ -40,11 +39,6 @@ func (c *CUsersServive) GetAllUser() ([]User, error) {
 // GetUser implements UserService.
 func (c *CUsersServive) GetUser(id int) (User, error) {
 	return c.repo.GetUser(id)
-}
-
-// UpdataPass implements UserService.
-func (c *CUsersServive) UpdataPass(Pass string) error {
-	panic("unimplemented")
 }
 
 // UpdataUser implements UserService.
