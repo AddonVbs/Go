@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"BackEnd/internal/db"
-	"BackEnd/internal/taskhandler"
+	"BackEnd/internal/handler"
 	"BackEnd/internal/taskservice"
 	tasks "BackEnd/internal/web/tasks"
 )
@@ -20,7 +20,7 @@ func main() {
 	// 2) Создаём repository → service → handler
 	repo := taskservice.NewTaskRepository(db.Db)
 	service := taskservice.NewTaskService(repo)
-	handler := taskhandler.NewStrictTaskHandler(service)
+	handler := handler.NewStrictTaskHandler(service)
 
 	// 3) Заводим Echo
 	e := echo.New()
