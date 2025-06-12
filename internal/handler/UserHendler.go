@@ -1,19 +1,20 @@
 package handler
 
 import (
-	us "BackEnd/internal/UserService"
+	us "BackEnd/internal/userservice"
 	"BackEnd/internal/web/users"
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
 
 type StrictUserHendler struct {
-	service us.UserService
+	service us.UserService1
 }
 
-func NewStrictUserHandler(u us.UserService) *StrictUserHendler {
+func NewStrictUserHandler(u us.UserService1) *StrictUserHendler {
 	return &StrictUserHendler{service: u}
 }
 
@@ -53,6 +54,9 @@ func (u *StrictUserHendler) PostUsers(ctx context.Context, request users.PostUse
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
+	now := time.Now()
+	us.UpdatedAt = &now
 	return users.PostUsers201JSONResponse(us), nil
 }
 

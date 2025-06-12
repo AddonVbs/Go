@@ -1,6 +1,6 @@
 package userservice
 
-type UserService interface {
+type UserService1 interface {
 	CreateUser(expression, pass string) (User, error)
 	GetAllUser() ([]User, error)
 	GetUser(id int) (User, error)
@@ -12,7 +12,7 @@ type CUsersServive struct {
 	repo UsersRepository
 }
 
-func NewUserService(r UsersRepository) UserService {
+func NewUserService(r UsersRepository) UserService1 {
 	return &CUsersServive{repo: r}
 
 }
