@@ -19,8 +19,8 @@ import (
 type User struct {
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty"`
-	Email     string     `json:"email"`
 	Id        *int       `json:"id,omitempty"`
+	Email     string     `json:"email"`
 	Password  string     `json:"password"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }

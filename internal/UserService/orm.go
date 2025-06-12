@@ -1,12 +1,16 @@
 package userservice
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
-	CreatedAt *time.Time `json:"created_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	Email     string     `json:"email"`
-	Id        *int       `json:"id,omitempty"`
-	Password  string     `json:"password"`
-	UpdatedAt *time.Time `json:"updated_at"`
+	CreatedAt time.Time      `json:"created_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	Id        int            `gorm:"primaryKey" json:"id"`
+	Email     string         `json:"email"`
+	Password  string         `json:"password"`
+	UpdatedAt time.Time      `json:"updated_at"`
 }

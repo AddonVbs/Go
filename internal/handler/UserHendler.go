@@ -5,7 +5,6 @@ import (
 	"BackEnd/internal/web/users"
 	"context"
 	"net/http"
-	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -26,7 +25,7 @@ func (u *StrictUserHendler) GetUsers(ctx context.Context, request users.GetUsers
 	response := users.GetUsers200JSONResponse{}
 
 	for _, val := range user {
-		var id int = int(*val.Id)
+		var id int = int(val.Id)
 		var email string = val.Email
 		var password string = val.Password
 		response = append(response, users.User{
@@ -55,9 +54,12 @@ func (u *StrictUserHendler) PostUsers(ctx context.Context, request users.PostUse
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	now := time.Now()
-	us.UpdatedAt = &now
-	return users.PostUsers201JSONResponse(us), nil
+	apiUser := users.User{
+		Email:    us.Email,
+		Password: us.Password, // или уберите, если не нужно возвращать пароль
+	}
+
+	return users.PostUsers201JSONResponse(apiUser), nil
 }
 
 func (u *StrictUserHendler) DeleteUsersId(ctx context.Context, request users.DeleteUsersIdRequestObject) (users.DeleteUsersIdResponseObject, error) {
@@ -87,6 +89,10 @@ func (u *StrictUserHendler) PatchUsersId(ctx context.Context, request users.Patc
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 
 	}
-	return users.PatchUsersId200JSONResponse(user), nil
+	apiUser := users.User{
+		Email:    user.Email,
+		Password: user.Password, // или уберите, если не нужно отдавать пароль,
+	}
+	return users.PatchUsersId200JSONResponse(apiUser), nil
 
 }

@@ -19,7 +19,7 @@ type UserRepositoryDb struct {
 
 // CreateUser implements UsersRepository.
 func (u *UserRepositoryDb) CreateUser(user User) error {
-	return u.db.Create(user).Error
+	return u.db.Create(&user).Error
 }
 
 // DeleteUser implements UsersRepository.
