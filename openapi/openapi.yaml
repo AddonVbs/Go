@@ -79,6 +79,7 @@ paths:
       responses:
         "204":
           description: No Content (успешно удалено)
+
   /users:
     get:
       summary: Get all users
@@ -151,6 +152,27 @@ paths:
         "204":
           description: Deleted successfully
 
+  /users/{id}/tasks:
+    get:
+      summary: Get all tasks for a specific user
+      tags:
+        - users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: A list of tasks for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+
 components:
   schemas:
     Task:
@@ -160,6 +182,12 @@ components:
           type: integer
         task:
           type: string
+        user_id:
+          type: integer
+          description: ID пользователя, которому принадлежит задача
+      required:
+        - task
+        - user_id
 
     User:
       type: object

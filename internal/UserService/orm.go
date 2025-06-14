@@ -1,6 +1,7 @@
 package userservice
 
 import (
+	t "BackEnd/internal/taskservice"
 	"time"
 
 	"gorm.io/gorm"
@@ -13,4 +14,6 @@ type User struct {
 	Email     string         `json:"email"`
 	Password  string         `json:"password"`
 	UpdatedAt time.Time      `json:"updated_at"`
+	//ALTER
+	Tasks []t.Task `gorm:"foreignKey:UserID"`
 }

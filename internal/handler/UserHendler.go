@@ -9,6 +9,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+var id_venv int = 1
+
 type StrictUserHendler struct {
 	service us.UserService1
 }
@@ -25,7 +27,7 @@ func (u *StrictUserHendler) GetUsers(ctx context.Context, request users.GetUsers
 	response := users.GetUsers200JSONResponse{}
 
 	for _, val := range user {
-		var id int = int(val.Id)
+		var id int = val.Id
 		var email string = val.Email
 		var password string = val.Password
 		response = append(response, users.User{
@@ -53,12 +55,13 @@ func (u *StrictUserHendler) PostUsers(ctx context.Context, request users.PostUse
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-
+	us.Id = id_venv
 	apiUser := users.User{
+		Id:       &us.Id,
 		Email:    us.Email,
 		Password: us.Password, // или уберите, если не нужно возвращать пароль
 	}
-
+	id_venv++
 	return users.PostUsers201JSONResponse(apiUser), nil
 }
 
@@ -89,7 +92,9 @@ func (u *StrictUserHendler) PatchUsersId(ctx context.Context, request users.Patc
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 
 	}
+	user.Id = id
 	apiUser := users.User{
+		Id:       &user.Id,
 		Email:    user.Email,
 		Password: user.Password, // или уберите, если не нужно отдавать пароль,
 	}
