@@ -16,11 +16,10 @@ import (
 
 // Task defines model for Task.
 type Task struct {
-	Id   *int   `json:"id,omitempty"`
-	Task string `json:"task"`
-
-	// UserId ID пользователя, которому принадлежит задача
-	UserId int `json:"user_id"`
+	Completed *bool   `json:"completed,omitempty"`
+	Id        *int    `json:"id,omitempty"`
+	Title     *string `json:"title,omitempty"`
+	UserId    *int    `json:"userId,omitempty"`
 }
 
 // PostTasksJSONRequestBody defines body for PostTasks for application/json ContentType.

@@ -152,26 +152,24 @@ paths:
         "204":
           description: Deleted successfully
 
-  /users/{id}/tasks:
+  /tasks/user/{userId}:
     get:
-      summary: Get all tasks for a specific user
-      tags:
-        - users
+      operationId: GetTasksByUserID
       parameters:
-        - name: id
+        - name: userId
           in: path
           required: true
           schema:
             type: integer
       responses:
-        "200":
-          description: A list of tasks for the user
+        '200':
+          description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Task"
+                  $ref: '#/components/schemas/Task'
 
 components:
   schemas:
@@ -182,12 +180,10 @@ components:
           type: integer
         task:
           type: string
-        user_id:
+        completed:
+          type: boolean
+        userId:
           type: integer
-          description: ID пользователя, которому принадлежит задача
-      required:
-        - task
-        - user_id
 
     User:
       type: object
