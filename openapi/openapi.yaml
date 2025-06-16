@@ -154,6 +154,8 @@ paths:
 
   /tasks/user/{userId}:
     get:
+      tags:
+        - tasks
       operationId: GetTasksByUserID
       parameters:
         - name: userId
@@ -178,7 +180,7 @@ components:
       properties:
         id:
           type: integer
-        task:
+        Task:
           type: string
         completed:
           type: boolean

@@ -6,10 +6,16 @@ type TaskServers interface {
 	GetTaskByID(id int) (Task, error)
 	UpdataTask(id int, expression string) (Task, error)
 	DeleteTask(id int) error
+	GetTasksForUser(userID int) ([]Task, error)
 }
 
 type taskService struct {
 	repo TaskRepository
+}
+
+// GetTasksForUser implements TaskServers.
+func (s *taskService) GetTasksForUser(userID int) ([]Task, error) {
+	return s.repo.GetTasksByUserID(userID)
 }
 
 func NewTaskService(r TaskRepository) TaskServers {

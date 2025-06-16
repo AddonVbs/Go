@@ -6,6 +6,7 @@ type UserService1 interface {
 	GetUser(id int) (User, error)
 	UpdataUser(id int, user User) (User, error)
 	DeleteUser(id int) error
+	GetUserForTasks(userID int) ([]User, error)
 }
 
 type CUsersServive struct {
@@ -59,5 +60,9 @@ func (c *CUsersServive) UpdataUser(id int, user User) (User, error) {
 		return User{}, err
 	}
 	return us, nil
+
+}
+
+func (c *CUsersServive) GetUserForTasks(id int) error {
 
 }

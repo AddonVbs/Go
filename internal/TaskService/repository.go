@@ -10,10 +10,20 @@ type TaskRepository interface {
 	GetTaskByID(id int) (Task, error)
 	UpdateTask(task Task) error
 	DeleteTask(id int) error
+	GetTasksByUserID(id int) ([]Task, error)
 }
 
 type RepositorysTasks struct {
 	db *gorm.DB
+}
+
+// GetTasksByUserID implements TaskRepository.
+func (r *RepositorysTasks) GetTasksByUserID(id int) ([]Task, error) {
+	var tasks []Task
+	if err := r.db.Find(&tasks, "user_id = ?", id).Error; err != nil {
+		return nil, err
+	}
+	return tasks, nil
 }
 
 func NewTaskRepository(db *gorm.DB) TaskRepository {
