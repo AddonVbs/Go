@@ -11,10 +11,18 @@ type UsersRepository interface {
 	GetUser(id int) (User, error)
 	UpdataUser(user User) error
 	DeleteUser(id int) error
+	GetUserForTasksByRepo(userID int) (User, error)
 }
 
 type UserRepositoryDb struct {
 	db *gorm.DB
+}
+
+// GetUserForTasksByRepo implements UsersRepository.
+func (u *UserRepositoryDb) GetUserForTasksByRepo(userID int) (User, error) {
+	var user User
+	err := u.db.Preload("Tasks").First(&user, "id = ?", userID).Error
+	return user, err
 }
 
 // CreateUser implements UsersRepository.
