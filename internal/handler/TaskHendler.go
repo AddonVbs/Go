@@ -91,3 +91,12 @@ func (h *StrictTaskHandler) PatchTasksId(ctx context.Context, request tasks.Patc
 
 	return resp, nil
 }
+
+func (h *StrictTaskHandler) GetTasksByUserID(ctx context.Context, request tasks.GetTasksByUserIDRequestObject) (tasks.GetTasksByUserIDResponseObject, error) {
+	userID := request.UserId
+	ts, err := h.service.GetTasksForUser(userID)
+	if err != nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	return tasks.GetTasksByUserID200JSONResponse(ts), nil
+}
