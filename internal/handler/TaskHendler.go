@@ -98,5 +98,14 @@ func (h *StrictTaskHandler) GetTasksByUserID(ctx context.Context, request tasks.
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	return tasks.GetTasksByUserID200JSONResponse(ts), nil
+	apiTasks := make([]tasks.Task, len(ts))
+	for i, t := range ts {
+		apiTasks[i] = tasks.Task{
+			Id:     &t.ID,     // если t.ID — int64, приведите
+			Task:   &t.Task,   // где t.Task — string
+			UserId: &t.UserID, // если t.UserID — int64
+		}
+	}
+
+	return tasks.GetTasksByUserID200JSONResponse(apiTasks), nil
 }
