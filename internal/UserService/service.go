@@ -6,11 +6,16 @@ type UserService1 interface {
 	GetUser(id int) (User, error)
 	UpdataUser(id int, user User) (User, error)
 	DeleteUser(id int) error
-	GetUserForTasks(userID int) ([]User, error)
+	GetUserForTasks(userID int) (User, error)
 }
 
 type CUsersServive struct {
 	repo UsersRepository
+}
+
+// GetUserForTasks implements UserService1.
+func (c *CUsersServive) GetUserForTasks(userID int) (User, error) {
+	return c.repo.GetUserForTasksByRepo(userID)
 }
 
 func NewUserService(r UsersRepository) UserService1 {
@@ -60,9 +65,5 @@ func (c *CUsersServive) UpdataUser(id int, user User) (User, error) {
 		return User{}, err
 	}
 	return us, nil
-
-}
-
-func (c *CUsersServive) GetUserForTasks(id int) error {
 
 }
