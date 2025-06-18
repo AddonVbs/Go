@@ -6,8 +6,3 @@ type Task struct {
 	//ALTER
 	UserID int `json:"user_id"`
 }
-
-type Response struct {
-	Status  string `json:"status"`
-	Message string `json:"message"`
-}

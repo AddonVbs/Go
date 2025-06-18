@@ -1,5 +1,0 @@
--- 20250602055208_tasks_alter.up.sql
-ALTER TABLE tasks
-  ADD COLUMN user_id INTEGER NOT NULL
-    REFERENCES users(id)
-    ON DELETE CASCADE;

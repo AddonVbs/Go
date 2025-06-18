@@ -42,20 +42,30 @@ func (h *StrictTaskHandler) GetTasks(ctx context.Context, request tasks.GetTasks
 func (h *StrictTaskHandler) PostTasks(ctx context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
 	body := request.Body
 
-	newServiceTask := taskservice.Task{
-		Task: *body.Task,
+	if body.UserId == nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "userId is required")
+	}
+	if body.Task == nil {
+		return nil, echo.NewHTTPError(http.StatusBadRequest, "task is required")
 	}
 
-	task, err := h.service.CreateTask(newServiceTask.Task)
+	newServiceTask := taskservice.Task{
+		Task:   *body.Task,
+		UserID: *body.UserId,
+	}
+
+	// Передаём всю структуру задачи, а не только строку
+	createdTask, err := h.service.CreateTask(&newServiceTask)
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	var idint int = int(task.ID)
-	var textPtr = task.Task
+
+	idint := int(createdTask.ID)
+	textPtr := createdTask.Task
+
 	resp := tasks.PostTasks201JSONResponse{
 		Id:   &idint,
 		Task: &textPtr,
-		// IsDone: nil,
 	}
 
 	return resp, nil
