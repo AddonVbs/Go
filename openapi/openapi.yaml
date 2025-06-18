@@ -152,7 +152,7 @@ paths:
         "204":
           description: Deleted successfully
 
-  /tasks/user/{userId}:
+  /users/{userId}/tasks:
     get:
       tags:
         - tasks
