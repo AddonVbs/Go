@@ -6,7 +6,7 @@ import (
 
 // crud
 type UsersRepository interface {
-	CreateUser(user User) error
+	CreateUser(user *User) error
 	GetAllUser() ([]User, error)
 	GetUser(id int) (User, error)
 	UpdataUser(user User) error
@@ -26,8 +26,8 @@ func (u *UserRepositoryDb) GetUserForTasksByRepo(userID int) (User, error) {
 }
 
 // CreateUser implements UsersRepository.
-func (u *UserRepositoryDb) CreateUser(user User) error {
-	return u.db.Create(&user).Error
+func (u *UserRepositoryDb) CreateUser(user *User) error {
+	return u.db.Create(user).Error
 }
 
 // DeleteUser implements UsersRepository.

@@ -1,7 +1,7 @@
 package userservice
 
 type UserService1 interface {
-	CreateUser(expression, pass string) (User, error)
+	CreateUser(expression, pass string) (*User, error)
 	GetAllUser() ([]User, error)
 	GetUser(id int) (User, error)
 	UpdataUser(id int, user User) (User, error)
@@ -24,10 +24,10 @@ func NewUserService(r UsersRepository) UserService1 {
 }
 
 // CreateUser implements UserService.
-func (c *CUsersServive) CreateUser(expression string, pass string) (User, error) {
-	ur := User{Email: expression, Password: pass}
+func (c *CUsersServive) CreateUser(expression string, pass string) (*User, error) {
+	ur := &User{Email: expression, Password: pass}
 	if err := c.repo.CreateUser(ur); err != nil {
-		return User{}, err
+		return nil, err
 	}
 	return ur, nil
 }

@@ -9,8 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-var id_venv int = 1
-
 type StrictUserHendler struct {
 	service us.UserService1
 }
@@ -55,13 +53,13 @@ func (u *StrictUserHendler) PostUsers(ctx context.Context, request users.PostUse
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	us.Id = id_venv
+
 	apiUser := users.User{
 		Id:       &us.Id,
 		Email:    us.Email,
 		Password: us.Password, // или уберите, если не нужно возвращать пароль
 	}
-	id_venv++
+
 	return users.PostUsers201JSONResponse(apiUser), nil
 }
 
